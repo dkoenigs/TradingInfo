@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TradingInfo.Services;
 
 namespace TradingInfo
 {
@@ -25,6 +26,9 @@ namespace TradingInfo
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var databaseProviderSingleton = new DatabaseProvider();
+            services.Add(new ServiceDescriptor(typeof(IDatabaseProvider), databaseProviderSingleton));
+            services.Add(new ServiceDescriptor(typeof(IDailyStockInfoProvider), new DailyStockInfoProvider(databaseProviderSingleton)));
             services.AddControllers();
         }
 

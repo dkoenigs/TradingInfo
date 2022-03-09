@@ -4,23 +4,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TradingInfo.Services;
 
 namespace TradingInfo.Controllers
 {
     [ApiController]
     [Route("api/tradingInfo")]
-    public class TradingInfo : ControllerBase
+    public class TradingInfoController : ControllerBase
     {
-        private static readonly string[] StockTickers = new[]
-        {
-            "Walmart", "RocketLab NZ", "Amazon", "Meta"
-        };
 
-        private readonly ILogger<TradingInfo> _logger;
+        private readonly ILogger<TradingInfoController> _logger;
+        private readonly IDailyStockInfoProvider _dailyStockInfoProvider;
 
-        public TradingInfo(ILogger<TradingInfo> logger)
+        public TradingInfoController(ILogger<TradingInfoController> logger, IDailyStockInfoProvider dailyStockInfoProvider)
         {
             _logger = logger;
+            _dailyStockInfoProvider = dailyStockInfoProvider;
         }
 
 
@@ -31,25 +30,19 @@ namespace TradingInfo.Controllers
         }
 
 
-        [HttpGet]
-        [Route("dailyStockInfo")]
-        public IEnumerable<StockInfo> GetDailyStockInfo()
+        [HttpGet("{count}")]
+        [Route("dailyStockInfo/{count}")]
+        public async Task<IEnumerable<StockInfo>> GetDailyStockInfo(int count)
         {
-            var rng = new Random();
-            List<StockInfo> dailyStockInfo = new List<StockInfo>();
-            foreach (string stock in StockTickers)
+            List<StockInfo> dailyStockInfo = await _dailyStockInfoProvider.GetDailyStockInfo(count);
+            
+            if (dailyStockInfo == null)
             {
-                dailyStockInfo.Add(
-                    new StockInfo
-                    {
-                        StockTicker = stock,
-                        CompanyInfo = "company info",
-                        UnitPrice = rng.Next(100, 500),
-                        Date = DateTime.Now
-                    }
-                    );
+                //_logger.Log(E"Error: No stocks returned.");
+                return null;
             }
-            return dailyStockInfo.ToArray();
+
+            return dailyStockInfo;
         }
     }
 }
