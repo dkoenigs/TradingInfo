@@ -1,0 +1,12 @@
+﻿- logging
+- unit tests & Integration tests
+- authentication for endpoints
+- 
+
+CI
+- Git triggers
+- Azure -> Run unit tests & integration tests
+
+CD
+- Deploy
+- 
