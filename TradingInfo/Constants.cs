@@ -7,7 +7,7 @@ namespace TradingInfo
 {
     public static class Constants
     {
-        public static readonly String key = "AKIA2A6P7G7UJX4HUDGC";
-        public static readonly String secret = "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";
+        public static readonly String key = "";
+        public static readonly String secret = "";
     }
 }
